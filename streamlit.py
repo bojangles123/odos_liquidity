@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.graph_objects as go
 
 def calculate_yield(total_pool_size, daily_volume, percent_in_range):
     """Calculate liquidity pool yields"""
@@ -226,30 +225,16 @@ for pct in range(0, 101, 5):
     result = calculate_yield(total_pool_size, daily_volume, pct)
     range_chart_data.append({
         'In-Range Percentage': pct,
-        'Monthly Yield': result['our_monthly_yield'],
-        'APR': result['our_apr']
+        'Monthly Yield': result['our_monthly_yield']
     })
 
 df_chart = pd.DataFrame(range_chart_data)
 
-fig = go.Figure()
-fig.add_trace(go.Scatter(
-    x=df_chart['In-Range Percentage'],
-    y=df_chart['Monthly Yield'],
-    mode='lines+markers',
-    name='Monthly Yield ($)',
-    line=dict(color='#00CC96', width=3)
-))
-
-fig.update_layout(
-    title="Monthly Yield vs % of Position In Range",
-    xaxis_title="% of Our Position In Range",
-    yaxis_title="Monthly Yield ($)",
-    template="plotly_white",
+st.line_chart(
+    df_chart.set_index('In-Range Percentage'),
+    use_container_width=True,
     height=400
 )
-
-st.plotly_chart(fig, use_container_width=True)
 
 # Methodology
 st.subheader("Methodology")
